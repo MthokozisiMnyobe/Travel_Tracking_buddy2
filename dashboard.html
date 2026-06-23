@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dashboard - ECDOE Travel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* ——— Reset & Base ——— */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+        }
+
+        /* ——— Sidebar ——— */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100%;
+            background: linear-gradient(180deg, #1a1a2e 0%, #16213e 100%);
+            color: white;
+            z-index: 100;
+            padding: 25px 0;
+        }
+        .sidebar-header {
+            padding: 0 25px 25px 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .sidebar-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-header p {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+            margin-top: 8px;
+        }
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 25px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        .sidebar-nav a i {
+            width: 20px;
+            font-size: 16px;
+        }
+        .sidebar-nav a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* ——— Main Content ——— */
+        .main-content {
+            margin-left: 280px;
+            padding: 30px;
+        }
+
+        /* ——— Top Bar ——— */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .welcome h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .welcome p {
+            color: #666;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+        .date-badge {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            font-weight: 500;
+            color: #1a73e8;
+        }
+
+        /* ——— Stats ——— */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .stat-info h3 {
+            font-size: 32px;
+            font-weight: 800;
+            color: #1a1a2e;
+        }
+        .stat-info p {
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .stat-icon {
+            width: 55px;
+            height: 55px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+        .bg-blue {
+            background: linear-gradient(135deg, #1a73e8, #0d7c3f);
+        }
+        .bg-green {
+            background: linear-gradient(135deg, #0d7c3f, #0a5c2f);
+        }
+        .bg-orange {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+        }
+        .bg-purple {
+            background: linear-gradient(135deg, #8e44ad, #6c3483);
+        }
+
+        /* ——— Charts ——— */
+        .charts-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+        .chart-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .chart-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        canvas {
+            max-height: 220px;
+        }
+
+        /* ——— Trips Table ——— */
+        .trips-card {
+            background: white;
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        .trips-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .trips-header h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a2e;
+        }
+        .view-all {
+            color: #1a73e8;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th {
+            text-align: left;
+            padding: 15px 12px;
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 13px;
+            color: #666;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+        .status-pending {
+            background: #fff3e0;
+            color: #e67e22;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .status-approved {
+            background: #e8f5e9;
+            color: #0d7c3f;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        .btn-approve {
+            background: linear-gradient(135deg, #0d7c3f, #0a5c2f);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .btn-reject {
+            background: linear-gradient(135deg, #de3831, #b92b24);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .coords {
+            font-family: monospace;
+            font-size: 11px;
+            color: #666;
+        }
+
+        /* ——— Responsive ——— */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 80px;
+            }
+            .sidebar-header h2 span,
+            .sidebar-header p,
+            .sidebar-nav a span {
+                display: none;
+            }
+            .main-content {
+                margin-left: 80px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ——— Sidebar ——— -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2><span>📍 ECDOE</span></h2>
+            <p>Travel Management System</p>
+        </div>
+        <div class="sidebar-nav">
+            <a href="dashboard.html"><i class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
+            <a href="trips.html"><i class="fas fa-road"></i><span> Trips</span></a>
+            <a href="claims.html"><i class="fas fa-file-invoice-dollar"></i><span> Claims</span></a>
+            <a href="vehicles.html"><i class="fas fa-car"></i><span> Vehicles</span></a>
+            <a href="officials.html"><i class="fas fa-users"></i><span> Officials</span></a>
+            <a href="export_sars.html"><i class="fas fa-file-excel"></i><span> SARS Export</span></a>
+            <a href="index.html"><i class="fas fa-home"></i><span> Home</span></a>
+        </div>
+    </div>
+
+    <!-- ——— Main ——— -->
+    <div class="main-content">
+        <div class="top-bar">
+            <div class="welcome">
+                <h1>Welcome, Admin User!</h1>
+                <p>Here's your travel management overview</p>
+            </div>
+            <div class="date-badge">
+                <i class="far fa-calendar-alt"></i> June 23, 2026
+            </div>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>2</h3>
+                    <p>Total Officials</p>
+                </div>
+                <div class="stat-icon bg-blue"><i class="fas fa-users"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>8</h3>
+                    <p>Trips This Month</p>
+                </div>
+                <div class="stat-icon bg-green"><i class="fas fa-road"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>1,880 km</h3>
+                    <p>Kilometers Traveled</p>
+                </div>
+                <div class="stat-icon bg-orange"><i class="fas fa-chart-line"></i></div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-info">
+                    <h3>R 8,500.00</h3>
+                    <p>Total Claims</p>
+                </div>
+                <div class="stat-icon bg-purple"><i class="fas fa-rand"></i></div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-row">
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-line" style="color: #1a73e8;"></i> Weekly Trip Activity</h3>
+                <canvas id="weeklyChart"></canvas>
+            </div>
+            <div class="chart-card">
+                <h3><i class="fas fa-chart-pie" style="color: #0d7c3f;"></i> Claims by Status</h3>
+                <canvas id="statusChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Recent Trips -->
+        <div class="trips-card">
+            <div class="trips-header">
+                <h3><i class="fas fa-clock" style="color: #1a73e8;"></i> Recent Trips</h3>
+                <a href="trips.html" class="view-all">View All →</a>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Official</th>
+                            <th>Destination</th>
+                            <th>Distance</th>
+                            <th>Claim</th>
+                            <th>Start Location</th>
+                            <th>Coordinates</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Thabo Mbeki</strong></td>
+                            <td>Port Elizabeth</td>
+                            <td>380 km</td>
+                            <td>R 1,881.00</td>
+                            <td>East London</td>
+                            <td class="coords">-32.9927, 27.9262</td>
+                            <td><span class="status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn-approve">✓ Approve</button>
+                                <button class="btn-reject">✗ Reject</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong>Nosipho Dlamini</strong></td>
+                            <td>Bhisho</td>
+                            <td>60 km</td>
+                            <td>R 297.00</td>
+                            <td>Bhisho</td>
+                            <td class="coords">-32.8479, 27.4426</td>
+                            <td><span class="status-approved">Approved</span></td>
+                            <td>—</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Thabo Mbeki</strong></td>
+                            <td>Mthatha</td>
+                            <td>300 km</td>
+                            <td>R 1,485.00</td>
+                            <td>East London</td>
+                            <td class="coords">-32.9927, 27.9262</td>
+                            <td><span class="status-pending">Pending</span></td>
+                            <td>
+                                <button class="btn-approve">✓ Approve</button>
+                                <button class="btn-reject">✗ Reject</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Weekly Chart
+        const weeklyCtx = document.getElementById('weeklyChart').getContext('2d');
+        new Chart(weeklyCtx, {
+            type: 'line',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Trips',
+                    data: [2, 5, 3, 7, 4, 1, 0],
+                    borderColor: '#1a73e8',
+                    backgroundColor: 'rgba(26,115,232,0.05)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#1a73e8',
+                    pointBorderColor: 'white',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // Status Chart
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Pending', 'Approved', 'Rejected'],
+                datasets: [{
+                    data: [3, 4, 1],
+                    backgroundColor: ['#e67e22', '#0d7c3f', '#de3831'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: { position: 'bottom' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

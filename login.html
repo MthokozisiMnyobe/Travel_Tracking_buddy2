@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Login - ECDOE Travel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a73e8, #0d7c3f);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .login-card {
+            background: white;
+            border-radius: 32px;
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .logo { text-align: center; margin-bottom: 32px; }
+        .logo h1 { font-size: 28px; color: #1a1a2e; }
+        .logo p { color: #666; font-size: 14px; }
+        .flag { display: flex; justify-content: center; margin: 15px 0; border-radius: 8px; overflow: hidden; }
+        .flag span { width: 50px; height: 6px; }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: 600; font-size: 14px; color: #333; margin-bottom: 6px; }
+        .input-group input {
+            width: 100%; padding: 14px 16px; border: 2px solid #e0e0e0; border-radius: 16px; font-size: 15px;
+        }
+        .btn {
+            width: 100%; padding: 14px; background: linear-gradient(135deg, #1a73e8, #0d7c3f); color: white;
+            border: none; border-radius: 16px; font-size: 16px; font-weight: 600; cursor: pointer;
+        }
+        .demo { text-align: center; margin-top: 20px; color: #999; font-size: 13px; }
+        .footer { text-align: center; margin-top: 30px; font-size: 11px; color: #999; }
+        .note { background: #fff3cd; padding: 12px; border-radius: 12px; margin-top: 20px; text-align: center; font-size: 13px; color: #856404; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="logo">
+            <h1>📍 ECDOE Travel</h1>
+            <p>Eastern Cape Department of Education</p>
+            <div class="flag">
+                <span style="background:#1a73e8;"></span>
+                <span style="background:white;"></span>
+                <span style="background:#0d7c3f;"></span>
+                <span style="background:#ffb81c;"></span>
+                <span style="background:#de3831;"></span>
+                <span style="background:black;"></span>
+            </div>
+        </div>
+
+        <div class="input-group">
+            <label>Username</label>
+            <input type="text" placeholder="admin" value="admin" readonly>
+        </div>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" placeholder="••••••••" value="password" readonly>
+        </div>
+
+        <button class="btn">Sign In →</button>
+
+        <div class="demo">
+            <span style="background:#f5f5f5; padding:4px 12px; border-radius:20px;">admin / password</span>
+        </div>
+
+        <div class="note">
+            ⚠️ This is a static preview. The live system requires a server connection.
+        </div>
+
+        <div class="footer">SARS Compliant Travel Management System v1.0</div>
+    </div>
+</body>
+</html>
